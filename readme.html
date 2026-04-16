@@ -271,19 +271,19 @@ body.marp-vscode blockquote {
 <p>※ <code>*</code> と <code>/</code> の右辺は数値のみ（<code>1.5</code> など）。</p>
 <h3 id="サンプル">サンプル</h3>
 <pre><code class="language-powershell"><span class="hljs-comment"># 100:58 + 25:45 - 12:22</span>
-tc.bat <span class="hljs-number">100</span>:<span class="hljs-number">58</span> p <span class="hljs-number">25</span>:<span class="hljs-number">45</span> m <span class="hljs-number">12</span>:<span class="hljs-number">22</span>
+tc <span class="hljs-number">100</span>:<span class="hljs-number">58</span> p <span class="hljs-number">25</span>:<span class="hljs-number">45</span> m <span class="hljs-number">12</span>:<span class="hljs-number">22</span>
 <span class="hljs-comment"># → 114:21 (114.350)</span>
 
 <span class="hljs-comment"># 60進法と10進法の混合</span>
-tc.bat <span class="hljs-number">49</span>:<span class="hljs-number">19</span> p <span class="hljs-number">61.25</span>
+tc <span class="hljs-number">49</span>:<span class="hljs-number">19</span> p <span class="hljs-number">61.25</span>
 <span class="hljs-comment"># → 110:34 (110.567)</span>
 
 <span class="hljs-comment"># 括弧と四則演算</span>
-tc.bat <span class="hljs-string">&quot;(1:30 + 0:30) * 2 - 0:15&quot;</span>
+tc <span class="hljs-string">&quot;(1:30 + 0:30) * 2 - 0:15&quot;</span>
 <span class="hljs-comment"># → 3:45 (3.750)</span>
 
 <span class="hljs-comment"># * / の右辺は数値のみ</span>
-tc.bat <span class="hljs-string">&quot;1:00 * 1.5&quot;</span>
+tc <span class="hljs-string">&quot;1:00 * 1.5&quot;</span>
 <span class="hljs-comment"># → 1:30 (1.500)</span>
 </code></pre>
 <hr>
