@@ -251,54 +251,6 @@ body.marp-vscode blockquote {
 <hr>
 <h2 id="使い方">使い方</h2>
 <p>コマンドプロンプトやPowerShellで、</p>
-<pre><code class="language-powershell">timecalc [式]
-</code></pre>
-<p>または</p>
-<pre><code class="language-powershell">tc [式]
-</code></pre>
-<p>と入力してください。</p>
-<hr>
-<h2 id="入力例記法">入力例・記法</h2>
-<ul>
-<li>加算: <code>+</code> または <code>p</code></li>
-<li>減算: <code>-</code> または <code>m</code></li>
-<li>乗算: <code>*</code></li>
-<li>除算: <code>/</code></li>
-<li>括弧: <code>(</code> <code>)</code></li>
-<li>60進法: <code>HH:MM</code>（例: 1:30）</li>
-<li>10進法: <code>H.M</code>（例: 1.5）</li>
-</ul>
-<p>※ <code>*</code> と <code>/</code> の右辺は数値のみ（<code>1.5</code> など）。</p>
-<h3 id="サンプル">サンプル</h3>
-<pre><code class="language-powershell"><span class="hljs-comment"># 100:58 + 25:45 - 12:22</span>
-tc <span class="hljs-number">100</span>:<span class="hljs-number">58</span> p <span class="hljs-number">25</span>:<span class="hljs-number">45</span> m <span class="hljs-number">12</span>:<span class="hljs-number">22</span>
-<span class="hljs-comment"># → 114:21 (114.350)</span>
-
-<span class="hljs-comment"># 60進法と10進法の混合</span>
-tc <span class="hljs-number">49</span>:<span class="hljs-number">19</span> p <span class="hljs-number">61.25</span>
-<span class="hljs-comment"># → 110:34 (110.567)</span>
-
-<span class="hljs-comment"># 括弧と四則演算</span>
-tc <span class="hljs-string">&quot;(1:30 + 0:30) * 2 - 0:15&quot;</span>
-<span class="hljs-comment"># → 3:45 (3.750)</span>
-
-<span class="hljs-comment"># * / の右辺は数値のみ</span>
-tc <span class="hljs-string">&quot;1:00 * 1.5&quot;</span>
-<span class="hljs-comment"># → 1:30 (1.500)</span>
-</code></pre>
-<hr>
-<h2 id="出力形式">出力形式</h2>
-<h1 id="timecalc-1">timecalc</h1>
-<p>経過時間の加減乗除・括弧計算をコマンドラインで手軽に行えるツールです。</p>
-<hr>
-<h2 id="インストール-1">インストール</h2>
-<p>PowerShellで下記コマンドを実行するだけで導入できます（管理者権限不要）。</p>
-<pre><code>powershell -ep bypass -c &quot;irm https://raw.githubusercontent.com/ritarm-sr/timecalc/main/install.ps1 | iex&quot;
-</code></pre>
-<p>インストール後は <code>timecalc</code> または <code>tc</code> でどこからでも呼び出せます。</p>
-<hr>
-<h2 id="使い方-1">使い方</h2>
-<p>コマンドプロンプトやPowerShellで、</p>
 <pre><code>timecalc [式]
 </code></pre>
 <p>または</p>
@@ -306,7 +258,7 @@ tc <span class="hljs-string">&quot;1:00 * 1.5&quot;</span>
 </code></pre>
 <p>と入力してください。</p>
 <hr>
-<h2 id="入力例記法-1">入力例・記法</h2>
+<h2 id="入力例記法">入力例・記法</h2>
 <ul>
 <li>加算: <code>+</code> または <code>p</code></li>
 <li>減算: <code>-</code> または <code>m</code></li>
@@ -317,7 +269,7 @@ tc <span class="hljs-string">&quot;1:00 * 1.5&quot;</span>
 <li>10進法: <code>H.M</code>（例: 1.5）</li>
 </ul>
 <p>※ <code>*</code>/<code>t</code> および <code>/</code>/<code>d</code> の右辺は数値のみ（<code>1.5</code> など）。</p>
-<h3 id="サンプル-1">サンプル</h3>
+<h3 id="サンプル">サンプル</h3>
 <pre><code class="language-powershell"><span class="hljs-comment"># 100:58 + 25:45 - 12:22</span>
 tc <span class="hljs-number">100</span>:<span class="hljs-number">58</span> p <span class="hljs-number">25</span>:<span class="hljs-number">45</span> m <span class="hljs-number">12</span>:<span class="hljs-number">22</span>
 <span class="hljs-comment"># → 114:21 (114.350)</span>
@@ -339,7 +291,7 @@ tc <span class="hljs-number">1</span>:<span class="hljs-number">00</span> t <spa
 <span class="hljs-comment"># → 1:30 (1.500)</span>
 </code></pre>
 <hr>
-<h2 id="出力形式-1">出力形式</h2>
+<h2 id="出力形式">出力形式</h2>
 <p><code>60進法 (10進法)</code> の形式で結果を表示します。</p>
 <hr>
 <h2 id="ライセンス">ライセンス</h2>
