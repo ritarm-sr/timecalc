@@ -120,6 +120,10 @@ func normalizeTokens(tokens []string) []string {
 			normalized = append(normalized, "+")
 		case "m":
 			normalized = append(normalized, "-")
+		case "t":
+			normalized = append(normalized, "*")
+		case "d":
+			normalized = append(normalized, "/")
 		default:
 			normalized = append(normalized, t)
 		}
@@ -164,7 +168,7 @@ func (termNode *term) eval() (int, error) {
 			result = int(float64(result) * right)
 		case "/":
 			if right == 0 {
-				return 0, fmt.Errorf("0では割れません")
+				return 0, fmt.Errorf("0で割ってます")
 			}
 			result = int(float64(result) / right)
 		}
