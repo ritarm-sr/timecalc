@@ -5,6 +5,72 @@ import (
 	"os"
 	"strconv"
 	"strings"
+
+	"github.com/alecthomas/participle/v2"
+	"github.com/alecthomas/participle/v2/lexer"
+)
+
+type expression struct {
+	Head *term       `parser:"@@"`
+	Tail []*exprTail `parser:"@@*"`
+}
+
+type exprTail struct {
+	Op    string `parser:"@(\"+\" | \"-\")"`
+	Right *term  `parser:"@@"`
+}
+
+type term struct {
+	Head *unary      `parser:"@@"`
+	Tail []*termTail `parser:"@@*"`
+}
+
+type termTail struct {
+	Op    string       `parser:"@(\"*\" | \"/\")"`
+	Right *scalarUnary `parser:"@@"`
+}
+
+type unary struct {
+	Signs []string `parser:"@(\"+\" | \"-\")*"`
+	Value *primary `parser:"@@"`
+}
+
+type scalarUnary struct {
+	Signs []string       `parser:"@(\"+\" | \"-\")*"`
+	Value *scalarPrimary `parser:"@@"`
+}
+
+type primary struct {
+	Group   *expression `parser:"  \"(\" @@ \")\""`
+	Literal *literal    `parser:"| @@"`
+}
+
+type scalarPrimary struct {
+	Number string `parser:"@Number"`
+}
+
+type literal struct {
+	Time   *string `parser:"  @Time"`
+	Number *string `parser:"| @Number"`
+}
+
+var (
+	expressionLexer = lexer.MustSimple([]lexer.SimpleRule{
+		{Name: "Time", Pattern: `\d+:\d+`},
+		{Name: "Number", Pattern: `(?:\d+(?:\.\d*)?|\.\d+)`},
+		{Name: "Plus", Pattern: `\+`},
+		{Name: "Minus", Pattern: `-`},
+		{Name: "Multiply", Pattern: `\*`},
+		{Name: "Divide", Pattern: `/`},
+		{Name: "LParen", Pattern: `\(`},
+		{Name: "RParen", Pattern: `\)`},
+		{Name: "Whitespace", Pattern: `\s+`},
+	})
+
+	expressionParser = participle.MustBuild[expression](
+		participle.Lexer(expressionLexer),
+		participle.Elide("Whitespace"),
+	)
 )
 
 func parseTimeInput(s string) (int, error) {
@@ -61,47 +127,125 @@ func normalizeTokens(tokens []string) []string {
 	return normalized
 }
 
+func (expr *expression) eval() (int, error) {
+	result, err := expr.Head.eval()
+	if err != nil {
+		return 0, err
+	}
+
+	for _, tail := range expr.Tail {
+		right, err := tail.Right.eval()
+		if err != nil {
+			return 0, err
+		}
+		switch tail.Op {
+		case "+":
+			result += right
+		case "-":
+			result -= right
+		}
+	}
+	return result, nil
+}
+
+func (termNode *term) eval() (int, error) {
+	result, err := termNode.Head.eval()
+	if err != nil {
+		return 0, err
+	}
+
+	for _, tail := range termNode.Tail {
+		right, err := tail.Right.eval()
+		if err != nil {
+			return 0, err
+		}
+		switch tail.Op {
+		case "*":
+			result = int(float64(result) * right)
+		case "/":
+			if right == 0 {
+				return 0, fmt.Errorf("0では割れません")
+			}
+			result = int(float64(result) / right)
+		}
+	}
+	return result, nil
+}
+
+func (unaryNode *unary) eval() (int, error) {
+	value, err := unaryNode.Value.eval()
+	if err != nil {
+		return 0, err
+	}
+
+	for i := len(unaryNode.Signs) - 1; i >= 0; i-- {
+		if unaryNode.Signs[i] == "-" {
+			value = -value
+		}
+	}
+	return value, nil
+}
+
+func (unaryNode *scalarUnary) eval() (float64, error) {
+	value, err := unaryNode.Value.eval()
+	if err != nil {
+		return 0, err
+	}
+
+	for i := len(unaryNode.Signs) - 1; i >= 0; i-- {
+		if unaryNode.Signs[i] == "-" {
+			value = -value
+		}
+	}
+	return value, nil
+}
+
+func (primaryNode *primary) eval() (int, error) {
+	if primaryNode.Group != nil {
+		return primaryNode.Group.eval()
+	}
+	return primaryNode.Literal.eval()
+}
+
+func (scalar *scalarPrimary) eval() (float64, error) {
+	value, err := strconv.ParseFloat(scalar.Number, 64)
+	if err != nil {
+		return 0, fmt.Errorf("無効な数値: %s", scalar.Number)
+	}
+	return value, nil
+}
+
+func (lit *literal) eval() (int, error) {
+	if lit.Time != nil {
+		return parseTimeToMinutes(*lit.Time)
+	}
+	if lit.Number != nil {
+		return parseTimeInput(*lit.Number)
+	}
+	return 0, fmt.Errorf("式が不正です")
+}
+
+func evaluateExpression(tokens []string) (int, error) {
+	expression := strings.Join(tokens, " ")
+	ast, err := expressionParser.ParseString("", expression)
+	if err != nil {
+		return 0, err
+	}
+	return ast.eval()
+}
+
 func main() {
 	args := os.Args[1:]
 	if len(args) == 0 {
-		fmt.Println("使い方: timecalc [p|m] HH:MM or 1.5 ...")
+		fmt.Println("使い方: timecalc 式")
 		return
 	}
 
 	tokens := normalizeTokens(args)
-
-	i := 0
-	resultMinutes := 0
-
-	if tokens[0] == "+" || tokens[0] == "-" {
-	} else {
-		mins, err := parseTimeInput(tokens[0])
-		if err != nil {
-			fmt.Println("エラー:", err)
-			return
-		}
-		resultMinutes = mins
-		i = 1
-	}
-
-	for i < len(tokens)-1 {
-		op := tokens[i]
-		val := tokens[i+1]
-		mins, err := parseTimeInput(val)
-		if err != nil {
-			fmt.Printf("無効な時間: %s\n", val)
-			return
-		}
-		switch op {
-		case "+":
-			resultMinutes += mins
-		case "-":
-			resultMinutes -= mins
-		default:
-			fmt.Printf("無効な演算子: %s\n", op)
-			return
-		}
-		i += 2
+	resultMinutes, err := evaluateExpression(tokens)
+	if err != nil {
+		fmt.Println("エラー:", err)
+		return
 	}
 
 	fmt.Println(formatMinutesWithDecimal(resultMinutes))
