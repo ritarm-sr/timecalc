@@ -260,33 +260,38 @@ body.marp-vscode blockquote {
 <hr>
 <h2 id="入力例記法">入力例・記法</h2>
 <ul>
-<li>加算: <code>+</code> または <code>p</code></li>
-<li>減算: <code>-</code> または <code>m</code></li>
-<li>乗算: <code>*</code> または <code>t</code></li>
-<li>除算: <code>/</code> または <code>d</code></li>
+<li>加算: <code>+</code> または <code>p</code> (plus の頭文字)</li>
+<li>減算: <code>-</code> または <code>m</code> (minus の頭文字)</li>
+<li>乗算: <code>*</code> または <code>t</code> (times の頭文字)</li>
+<li>除算: <code>/</code> または <code>d</code> (division の頭文字)</li>
 <li>括弧: <code>(</code> <code>)</code></li>
 <li>60進法: <code>HH:MM</code>（例: 1:30）</li>
 <li>10進法: <code>H.M</code>（例: 1.5）</li>
 </ul>
-<p>※ <code>*</code>/<code>t</code> および <code>/</code>/<code>d</code> の右辺は数値のみ（<code>1.5</code> など）。</p>
+<p>※ 乗算 <code>*</code> <code>t</code> および 除算 <code>/</code> <code>d</code> の右辺は数値のみ（<code>1.5</code> <code>4</code> など）。</p>
 <h3 id="サンプル">サンプル</h3>
-<pre><code class="language-powershell"><span class="hljs-comment"># 100:58 + 25:45 - 12:22</span>
+<pre><code class="language-powershell"><span class="hljs-comment"># 100時間58分に25時間45分を加え、さらに12時間22分を減らす</span>
+<span class="hljs-comment"># 100:58 + 25:45 - 12:22</span>
 tc <span class="hljs-number">100</span>:<span class="hljs-number">58</span> p <span class="hljs-number">25</span>:<span class="hljs-number">45</span> m <span class="hljs-number">12</span>:<span class="hljs-number">22</span>
 <span class="hljs-comment"># → 114:21 (114.350)</span>
 
 <span class="hljs-comment"># 60進法と10進法の混合</span>
+<span class="hljs-comment"># 49時間19分に61.25時間を加える</span>
 tc <span class="hljs-number">49</span>:<span class="hljs-number">19</span> p <span class="hljs-number">61.25</span>
 <span class="hljs-comment"># → 110:34 (110.567)</span>
 
 <span class="hljs-comment"># 括弧や演算子を混ぜる場合、スペース区切りで &quot;&quot; が必要なこともあります</span>
+<span class="hljs-comment"># 1時間30分に30分を加えたものを2倍して、15分減らす</span>
 tc <span class="hljs-string">&quot;(1:30 + 0:30) t 2 m 0:15&quot;</span>
 <span class="hljs-comment"># → 3:45 (3.750)</span>
 
 <span class="hljs-comment"># p, m, t, d のみで構成される式はクォート不要</span>
+<span class="hljs-comment"># 1時間を2倍して、その半分の時間を求める</span>
 tc <span class="hljs-number">1</span>:<span class="hljs-number">00</span> t <span class="hljs-number">2</span> d <span class="hljs-number">2</span>
 <span class="hljs-comment"># → 1:00 (1.000)</span>
 
 <span class="hljs-comment"># * / の右辺は数値のみ</span>
+<span class="hljs-comment"># 1時間を1.5倍する</span>
 tc <span class="hljs-number">1</span>:<span class="hljs-number">00</span> t <span class="hljs-number">1.5</span>
 <span class="hljs-comment"># → 1:30 (1.500)</span>
 </code></pre>
